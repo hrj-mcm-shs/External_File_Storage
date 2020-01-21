@@ -11,10 +11,14 @@ import android.widget.TextView;
 import android.widget.EditText;
 import android.widget.Button;
 import android.widget.Toast;
-
+import android.os.Environment;
 
 public class MainActivity extends AppCompatActivity {
 
+    final EditText textbox = findViewById(R.id.textbox);
+    final Button buttonRead = findViewById(R.id.buttonread);
+    final Button buttonWrite = findViewById(R.id.buttonwrite);
+    final Button buttonClear = findViewById(R.id.buttonclear);
 
     static final int READ_BLOCK_SIZE = 100;
     @Override
@@ -22,28 +26,23 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final EditText textbox = findViewById(R.id.textbox);
-        final Button buttonRead = findViewById(R.id.buttonread);
-        final Button buttonWrite = findViewById(R.id.buttonwrite);
-        final Button buttonClear = findViewById(R.id.buttonclear);
-
         buttonRead.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
                         try {
-                            FileInputStream fileIn=openFileInput("mytextfile.txt");
-                            InputStreamReader InputRead= new InputStreamReader(fileIn);
+                            FileInputStream fileIn = openFileInput("mytextfile.txt");
+                            InputStreamReader InputRead = new InputStreamReader(fileIn);
 
-                            char[] inputBuffer= new char[READ_BLOCK_SIZE];
-                            String s="";
+                            char[] inputBuffer = new char[READ_BLOCK_SIZE];
+                            String s = "";
                             int charRead;
 
-                            while ((charRead=InputRead.read(inputBuffer))>0) {
+                            while ((charRead = InputRead.read(inputBuffer)) > 0) {
                                 // char to string conversion
-                                String readstring=String.copyValueOf(inputBuffer,0,charRead);
-                                s +=readstring;
+                                String readstring = String.copyValueOf(inputBuffer, 0, charRead);
+                                s += readstring;
                             }
                             InputRead.close();
                             textbox.setText(s);
@@ -62,8 +61,8 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(View v) {
 
                         try {
-                            FileOutputStream fileout=openFileOutput("mytextfile.txt", MODE_PRIVATE);
-                            OutputStreamWriter outputWriter=new OutputStreamWriter(fileout);
+                            FileOutputStream fileout = openFileOutput("mytextfile.txt", MODE_PRIVATE);
+                            OutputStreamWriter outputWriter = new OutputStreamWriter(fileout);
                             outputWriter.write(textbox.getText().toString());
                             outputWriter.close();
 
@@ -87,6 +86,29 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
+
+        if (!isExternalStorageAvailable() || isExternalStorageReadOnly()) {
+            buttonWrite.setEnabled(false);
+        }
+
     }
+
+    public static void isExternalStorageReadOnly() {
+        String extStorageState = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(extStorageState)) {
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean isExternalStorageAvailable() {
+        String extStorageState = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(extStorageState)) {
+            return true;
+        }
+        return false;
+    }
+
+
 }
 
