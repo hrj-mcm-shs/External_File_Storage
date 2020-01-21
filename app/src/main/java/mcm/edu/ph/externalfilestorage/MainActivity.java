@@ -2,8 +2,11 @@ package mcm.edu.ph.externalfilestorage;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import android.view.View;
@@ -21,6 +24,12 @@ public class MainActivity extends AppCompatActivity {
     final Button buttonClear = findViewById(R.id.buttonclear);
 
     static final int READ_BLOCK_SIZE = 100;
+
+    private String filename = "cordero.txt";
+    private String filepath = "cordero_externalIO";
+    File myFile;
+    String Data = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,30 +68,15 @@ public class MainActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
                         try {
-                            FileOutputStream fileout = openFileOutput("mytextfile.txt", MODE_PRIVATE);
-                            OutputStreamWriter outputWriter = new OutputStreamWriter(fileout);
-                            outputWriter.write(textbox.getText().toString());
-                            outputWriter.close();
-
-                            //display file saved message
-                            Toast.makeText(getBaseContext(), "File saved successfully!",
-                                    Toast.LENGTH_SHORT).show();
-
-                        } catch (Exception e) {
+                            FileOutputStream fos = new FileOutputStream(myFile);
+                            fos.write(textbox.getText().toString().getBytes());
+                            fos.close();
+                        } catch (IOException e) {
                             e.printStackTrace();
                         }
-                    }
-                }
-        );
-
-        buttonClear.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        textbox.setText("");
-
+                        Toast.makeText(getBaseContext(), "File saved successfully!",
+                                Toast.LENGTH_SHORT).show();
                     }
                 }
         );
