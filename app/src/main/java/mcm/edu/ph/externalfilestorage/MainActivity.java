@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public static void isExternalStorageReadOnly() {
+    public static boolean isExternalStorageReadOnly() {
         String extStorageState = Environment.getExternalStorageState();
         if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(extStorageState)) {
             return true;
@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
-    private static boolean isExternalStorageAvailable() {
+    public static boolean isExternalStorageAvailable() {
         String extStorageState = Environment.getExternalStorageState();
         if (Environment.MEDIA_MOUNTED.equals(extStorageState)) {
             return true;
